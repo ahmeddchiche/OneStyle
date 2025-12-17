@@ -29,16 +29,16 @@
     }
     .container {
       width: 90%;
-      margin: 30px auto;
+      margin: 20px auto;
     }
     h2 {
-      margin-top: 40px;
+      margin-top: 30px;
       color: #333;
     }
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
       margin-top: 20px;
     }
     .product {
@@ -46,11 +46,11 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
-      padding: 15px;
+      padding: 10px;
     }
     .product img {
       width: 100%;
-      height: 180px;
+      height: 150px;
       object-fit: cover;
       border-radius: 8px;
     }
@@ -58,8 +58,8 @@
       margin: 10px 0 5px;
     }
     .product button {
-      margin-top: 10px;
-      padding: 8px 12px;
+      margin-top: 8px;
+      padding: 6px 10px;
       background: #111;
       color: white;
       border: none;
@@ -90,11 +90,19 @@
       cursor: pointer;
     }
     footer {
-      margin-top: 50px;
+      margin-top: 40px;
       background: #111;
       color: white;
       text-align: center;
       padding: 15px;
+    }
+
+    /* Responsive pour mobile */
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      .cart { font-size: 14px; padding: 6px 12px; }
+      .product img { height: 120px; }
+      .product button, .product-form button, .product-form input { padding: 8px; }
     }
   </style>
 </head>
@@ -103,9 +111,7 @@
 <header>
   <h1>One<span>Style</span></h1>
   <p>Accessoires pour Hommes & Femmes</p>
-  <div class="cart">
-    🛒 Panier : <span id="cartCount">0</span> produit(s)
-  </div>
+
 </header>
 
 <div class="container">
@@ -141,7 +147,7 @@
   <h2>Ajouter un produit</h2>
   <div class="product-form">
     <input type="text" id="productName" placeholder="Nom du produit" />
-    <input type="text" id="productImage" placeholder="Lien image" />
+    <input type="file" id="productImageFile" accept="image/*" />
     <button onclick="addProduct()">Ajouter au site</button>
   </div>
 
@@ -150,7 +156,7 @@
 </div>
 
 <footer>
-  <p>© 2025 OneStyle - Alia Mekni</p>
+  <p>© 2025 OneStyle - chrifa  Mekni</p>
 </footer>
 
 <script>
@@ -163,28 +169,34 @@
 
   function addProduct() {
     const name = document.getElementById('productName').value;
-    const img = document.getElementById('productImage').value;
+    const fileInput = document.getElementById('productImageFile');
+    const file = fileInput.files[0];
 
-    if (!name || !img) {
+    if (!name || !file) {
       alert('Veuillez remplir tous les champs');
       return;
     }
 
-    const container = document.getElementById('newProducts');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const container = document.getElementById('newProducts');
 
-    const productDiv = document.createElement('div');
-    productDiv.className = 'product';
-    productDiv.innerHTML = `
-      <img src="${img}" />
-      <h3>${name}</h3>
-      <button onclick="addToCart()">Ajouter au panier</button>
-    `;
+      const productDiv = document.createElement('div');
+      productDiv.className = 'product';
+      productDiv.innerHTML = `
+        <img src="${e.target.result}" />
+        <h3>${name}</h3>
+        <button onclick="addToCart()">Ajouter au panier</button>
+      `;
 
-    container.appendChild(productDiv);
+      container.appendChild(productDiv);
 
-    // Reset form
-    document.getElementById('productName').value = '';
-    document.getElementById('productImage').value = '';
+      // Reset form
+      document.getElementById('productName').value = '';
+      fileInput.value = '';
+    };
+
+    reader.readAsDataURL(file);
   }
 </script>
 
